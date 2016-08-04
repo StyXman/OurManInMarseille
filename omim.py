@@ -29,7 +29,7 @@ import sys
 
 from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
 from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
-from PyQt4.QtGui import QVBoxLayout, QWidget
+from PyQt4.QtGui import QVBoxLayout, QWidget, QSizePolicy
 from PyQt4.QtCore import QTimer, QObject, QSize
 
 from gi.repository import GExiv2, GLib
@@ -135,6 +135,12 @@ SECONDS is the time between images.""" % sys.argv[0])
     centralwidget = QWidget(win)
     win.setCentralWidget (centralwidget)
 
+    sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+    sizePolicy.setHorizontalStretch(0)
+    sizePolicy.setVerticalStretch(0)
+    sizePolicy.setHeightForWidth(centralwidget.sizePolicy().hasHeightForWidth())
+    centralwidget.setSizePolicy(sizePolicy)
+
     scene= QGraphicsScene ()
     item= QGraphicsPixmapItem ()
     scene.addItem (item)
@@ -149,6 +155,8 @@ SECONDS is the time between images.""" % sys.argv[0])
     timer.start (float (sys.argv[2])*1000)
 
     layout= QVBoxLayout (centralwidget)
+    layout.setSpacing (0)
+    layout.setContentsMargins (0, 0, 0, 0)
     layout.addWidget (view)
 
     win.showFullScreen ()
