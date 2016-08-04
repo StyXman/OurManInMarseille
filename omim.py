@@ -29,6 +29,7 @@ import sys
 
 from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
 from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
+from PyQt4.QtGui import QVBoxLayout, QWidget
 from PyQt4.QtCore import QTimer, QObject, QSize
 
 from gi.repository import GExiv2, GLib
@@ -119,8 +120,6 @@ class OMIMMain (QObject):
         # print (self.item.pos ().x(), self.item.pos ().y(), )
         self.zoomFit (imgSize)
 
-        self.item= item
-
 
 if __name__=='__main__':
     if len (sys.argv)<3:  # awwww :)
@@ -133,10 +132,13 @@ SECONDS is the time between images.""" % sys.argv[0])
     app= QApplication (sys.argv)
     win= QMainWindow ()
 
+    centralwidget = QWidget(win)
+    win.setCentralWidget (centralwidget)
+
     scene= QGraphicsScene ()
     item= QGraphicsPixmapItem ()
     scene.addItem (item)
-    view= QGraphicsView (scene)
+    view= QGraphicsView (scene, win)
     view.show()
 
     runner= OMIMMain (view, item, sys.argv[1])
@@ -145,5 +147,10 @@ SECONDS is the time between images.""" % sys.argv[0])
     timer= QTimer (app)
     timer.timeout.connect (runner.newImage)
     timer.start (float (sys.argv[2])*1000)
+
+    layout= QVBoxLayout (centralwidget)
+    layout.addWidget (view)
+
+    win.showFullScreen ()
 
     app.exec_ ()
