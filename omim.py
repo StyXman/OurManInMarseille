@@ -30,16 +30,18 @@ import sys
 from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
 from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
 from PyQt4.QtGui import QVBoxLayout, QWidget, QSizePolicy, QFrame, QBrush, QColor
-from PyQt4.QtCore import QTimer, QObject, QSize, Qt
+from PyQt4.QtCore import QTimer, QObject, QSize, Qt, QRectF
 
 from gi.repository import GExiv2, GLib
 
 
 class OMIMMain (QObject):
-    def __init__ (self, view, item, root, *args):
+    def __init__ (self, view, scene, item, root, *args):
         QObject.__init__ (self, view)
         self.view= view
+        self.scene= scene
         self.item= item
+
         self.zoomLevel= 1.0
         self.rotation= 0
 
@@ -58,7 +60,9 @@ class OMIMMain (QObject):
 
     def zoomFit (self, imgSize):
         winSize= self.view.size ()
-        print (winSize, imgSize)
+        # print (winSize, imgSize)
+        self.scene.setSceneRect (QRectF(0.0, 0.0,
+                                        imgSize.width (), imgSize.height ()))
 
         hZoom= winSize.width  ()/imgSize.width  ()
         vZoom= winSize.height ()/imgSize.height ()
