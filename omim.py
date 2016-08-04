@@ -29,7 +29,7 @@ import sys
 
 from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
 from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
-from PyQt4.QtGui import QVBoxLayout, QWidget, QSizePolicy
+from PyQt4.QtGui import QVBoxLayout, QWidget, QSizePolicy, QFrame
 from PyQt4.QtCore import QTimer, QObject, QSize
 
 from gi.repository import GExiv2, GLib
@@ -142,9 +142,13 @@ SECONDS is the time between images.""" % sys.argv[0])
     centralwidget.setSizePolicy(sizePolicy)
 
     scene= QGraphicsScene ()
+
     item= QGraphicsPixmapItem ()
     scene.addItem (item)
+
     view= QGraphicsView (scene, win)
+    view.setFrameShadow (QFrame.Plain)
+    view.setFrameStyle (QFrame.NoFrame)
     view.show()
 
     runner= OMIMMain (view, item, sys.argv[1])
