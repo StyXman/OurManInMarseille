@@ -29,7 +29,9 @@ import sys
 
 from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
 from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
-from PyQt4.QtCore import QTimer, QObject
+from PyQt4.QtCore import QTimer, QObject, QSize
+
+from gi.repository import GExiv2, GLib
 
 
 class OMIMMain (QObject):
@@ -38,6 +40,7 @@ class OMIMMain (QObject):
         self.view= view
         self.item= item
         self.zoomLevel= 1.0
+        self.rotation= 0
 
         self.files= []
         self.scan (root)
@@ -52,10 +55,9 @@ class OMIMMain (QObject):
                     self.files.append (os.path.join (r, name))
 
 
-    def zoomFit (self, img):
+    def zoomFit (self, imgSize):
         winSize= self.view.size ()
-        imgSize= img.size ()
-        # print (winSize, imgSize)
+        print (winSize, imgSize)
 
         hZoom= winSize.width  ()/imgSize.width  ()
         vZoom= winSize.height ()/imgSize.height ()
@@ -70,13 +72,52 @@ class OMIMMain (QObject):
 
 
     def newImage (self, *args):
-        fname= random.choice (self.files)
-        print (fname)
+        found_next= False
+        while not found_next:
+            fname= random.choice (self.files)
+            print (fname)
+
+            try:
+                metadata= GExiv2.Metadata (fname)
+            except GLib.Error as e:
+                print (repr (e))
+            else:
+                found_next= True
 
         img= QPixmap (fname)
+        imgSize= img.size ()
+
+        # Qt only handles orientation properly from v5.5
+        try:
+            # try directly to get the tag, because sometimes get_tags() returns
+            # tags that don't actually are in the file
+            rot= metadata['Exif.Image.Orientation']
+        except KeyError:
+            # guess :-/
+            print ("rotation 'guessed'")
+            rot= '1'
+
+        # see http://www.daveperrett.com/images/articles/2012-07-28-exif-orientation-handling-is-a-ghetto/EXIF_Orientations.jpg
+        # we have to 'undo' the rotations, so the numbers are negative
+        if rot=='1':
+            rotate= 0
+        if rot=='8':
+            imgSize= QSize (imgSize.height (), imgSize.width ())
+            rotate= -90
+        if rot=='3':
+            rotate= -180
+        if rot=='6':
+            imgSize= QSize (imgSize.height (), imgSize.width ())
+            rotate= -270
+
+        # undo the last rotation and apply the new one
+        self.view.rotate (-self.rotation+rotate)
+        self.rotation= rotate
+        print (rot, rotate, self.rotation)
+
         self.item.setPixmap (img)
         # print (self.item.pos ().x(), self.item.pos ().y(), )
-        self.zoomFit (img)
+        self.zoomFit (imgSize)
 
         self.item= item
 
