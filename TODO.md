@@ -1,5 +1,6 @@
 * black background
 * scrollbars
 * small photos
-* rotate portrait.
+* rotate portrait
 * file path, date?
+* PyQt5
