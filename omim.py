@@ -94,9 +94,9 @@ class OMIMMain (QObject):
 
     def zoomFit (self, imgSize):
         winSize= self.view.size ()
-        # print (winSize, imgSize)
-        self.scene.setSceneRect (QRectF(0.0, 0.0,
-                                        imgSize.width (), imgSize.height ()))
+        # we might have rotated the view, but the scene still has the image
+        # in its original size, so we use that as bounding rect
+        boundingRect= QRectF (self.item.pixmap ().rect ())
         self.scene.setSceneRect (boundingRect)
 
         hZoom= winSize.width  ()/imgSize.width  ()
