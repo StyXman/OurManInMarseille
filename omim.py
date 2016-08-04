@@ -72,22 +72,7 @@ class OMIMMain (QObject):
         self.zoomLevel= zoomLevel
 
 
-    def newImage (self, *args):
-        found_next= False
-        while not found_next:
-            fname= random.choice (self.files)
-            print (fname)
-
-            try:
-                metadata= GExiv2.Metadata (fname)
-            except GLib.Error as e:
-                print (repr (e))
-            else:
-                found_next= True
-
-        img= QPixmap (fname)
-        imgSize= img.size ()
-
+    def rotate (self, metadata, origImgSize):
         # Qt only handles orientation properly from v5.5
         try:
             # try directly to get the tag, because sometimes get_tags() returns
@@ -102,19 +87,40 @@ class OMIMMain (QObject):
         # we have to 'undo' the rotations, so the numbers are negative
         if rot=='1':
             rotate= 0
+            imgSize= origImgSize
         if rot=='8':
-            imgSize= QSize (imgSize.height (), imgSize.width ())
             rotate= -90
+            imgSize= QSize (origImgSize.height (), origImgSize.width ())
         if rot=='3':
             rotate= -180
+            imgSize= origImgSize
         if rot=='6':
-            imgSize= QSize (imgSize.height (), imgSize.width ())
             rotate= -270
+            imgSize= QSize (origImgSize.height (), origImgSize.width ())
 
         # undo the last rotation and apply the new one
         self.view.rotate (-self.rotation+rotate)
         self.rotation= rotate
-        print (rot, rotate, self.rotation)
+        # print (rot, rotate, self.rotation)
+
+        return imgSize
+
+
+    def nextImage (self, *args):
+        found_next= False
+        while not found_next:
+            fname= random.choice (self.files)
+            print (fname)
+
+            try:
+                metadata= GExiv2.Metadata (fname)
+            except GLib.Error as e:
+                print (repr (e))
+            else:
+                found_next= True
+
+        img= QPixmap (fname)
+        imgSize= self.rotate (metadata, img.size ())
 
         self.item.setPixmap (img)
         # print (self.item.pos ().x(), self.item.pos ().y(), )
@@ -156,10 +162,10 @@ SECONDS is the time between images.""" % sys.argv[0])
     view.setBackgroundBrush(brush)
 
     runner= OMIMMain (view, item, sys.argv[1])
-    runner.newImage ()
+    runner.nextImage ()
 
     timer= QTimer (app)
-    timer.timeout.connect (runner.newImage)
+    timer.timeout.connect (runner.nextImage)
     timer.start (float (sys.argv[2])*1000)
 
     layout= QVBoxLayout (centralwidget)
