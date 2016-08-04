@@ -82,6 +82,13 @@ class OMIMMain (QObject):
 
 
 if __name__=='__main__':
+    if len (sys.argv)<3:  # awwww :)
+        print ("""usage: %s ROOT SECONDS
+
+ROOT points to the root directory where the images are going to be picked up.
+SECONDS is the time between images.""" % sys.argv[0])
+        sys.exit (1)
+
     app= QApplication (sys.argv)
     win= QMainWindow ()
 
