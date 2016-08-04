@@ -58,24 +58,6 @@ class OMIMMain (QObject):
                     self.files.append (os.path.join (r, name))
 
 
-    def zoomFit (self, imgSize):
-        winSize= self.view.size ()
-        # print (winSize, imgSize)
-        self.scene.setSceneRect (QRectF(0.0, 0.0,
-                                        imgSize.width (), imgSize.height ()))
-
-        hZoom= winSize.width  ()/imgSize.width  ()
-        vZoom= winSize.height ()/imgSize.height ()
-        zoomLevel= min (hZoom, vZoom)
-        # print (zoomLevel)
-
-        scale= zoomLevel/self.zoomLevel
-        # print ("scaling", scale)
-        self.view.centerOn (self.item)
-        self.view.scale (scale, scale)
-        self.zoomLevel= zoomLevel
-
-
     def rotate (self, metadata, origImgSize):
         # Qt only handles orientation properly from v5.5
         try:
@@ -108,6 +90,25 @@ class OMIMMain (QObject):
         # print (rot, rotate, self.rotation)
 
         return imgSize
+
+
+    def zoomFit (self, imgSize):
+        winSize= self.view.size ()
+        # print (winSize, imgSize)
+        self.scene.setSceneRect (QRectF(0.0, 0.0,
+                                        imgSize.width (), imgSize.height ()))
+        self.scene.setSceneRect (boundingRect)
+
+        hZoom= winSize.width  ()/imgSize.width  ()
+        vZoom= winSize.height ()/imgSize.height ()
+        zoomLevel= min (hZoom, vZoom)
+        # print (zoomLevel)
+
+        scale= zoomLevel/self.zoomLevel
+        # print ("scaling", scale)
+        self.view.scale (scale, scale)
+        self.view.centerOn (self.item)
+        self.zoomLevel= zoomLevel
 
 
     def nextImage (self, *args):
