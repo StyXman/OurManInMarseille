@@ -165,7 +165,7 @@ SECONDS is the time between images.""" % sys.argv[0])
     brush.setStyle(Qt.SolidPattern)
     view.setBackgroundBrush(brush)
 
-    runner= OMIMMain (view, item, sys.argv[1])
+    runner= OMIMMain (view, scene, item, sys.argv[1])
     runner.nextImage ()
 
     timer= QTimer (app)
