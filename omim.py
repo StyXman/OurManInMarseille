@@ -44,26 +44,26 @@ class OMIMMain (QObject):
 
 
     def scan (self, root):
-        print ('scanning %s' % root)
+        # print ('scanning %s' % root)
         for r, dirs, files in os.walk (os.path.abspath (root)):
             for name in files:
                 if name[-4:] in ('.jpg', '.png'):
-                    print ('found %s' % name)
+                    # print ('found %s' % name)
                     self.files.append (os.path.join (r, name))
 
 
     def zoomFit (self, img):
         winSize= self.view.size ()
         imgSize= img.size ()
-        print (winSize, imgSize)
+        # print (winSize, imgSize)
 
         hZoom= winSize.width  ()/imgSize.width  ()
         vZoom= winSize.height ()/imgSize.height ()
         zoomLevel= min (hZoom, vZoom)
-        print (zoomLevel)
+        # print (zoomLevel)
 
         scale= zoomLevel/self.zoomLevel
-        print ("scaling", scale)
+        # print ("scaling", scale)
         self.view.centerOn (self.item)
         self.view.scale (scale, scale)
         self.zoomLevel= zoomLevel
