@@ -131,6 +131,11 @@ class OMIMMain (QObject):
         # print (self.item.pos ().x(), self.item.pos ().y(), )
         self.zoomFit (imgSize)
 
+        # print (self.view.size (), self.view.sceneRect ())
+        # print (self.scene.sceneRect ())
+        # print (self.item.boundingRect (), self.item.pos ().x (),
+        #        self.item.pos ().y (), imgSize)
+
 
 if __name__=='__main__':
     if len (sys.argv)<3:  # awwww :)
