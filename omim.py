@@ -47,7 +47,7 @@ class OMIMMain (QObject):
         # print ('scanning %s' % root)
         for r, dirs, files in os.walk (os.path.abspath (root)):
             for name in files:
-                if name[-4:] in ('.jpg', '.png'):
+                if name[-4:].lower () in ('.jpg', '.png'):
                     # print ('found %s' % name)
                     self.files.append (os.path.join (r, name))
 
