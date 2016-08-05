@@ -163,12 +163,12 @@ SECONDS is the time between images.""" % sys.argv[0])
     view.setBackgroundBrush(brush)
 
     runner= OMIMMain (view, scene, item, sys.argv[1])
-    runner.nextImage ()
 
     timer= QTimer (app)
     timer.timeout.connect (runner.nextImage)
     timer.start (float (sys.argv[2])*1000)
 
+    firstImage= QTimer.singleShot (200, runner.nextImage)
 
     win.setCentralWidget (view)
     win.showFullScreen ()
