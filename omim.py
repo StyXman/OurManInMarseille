@@ -148,15 +148,6 @@ SECONDS is the time between images.""" % sys.argv[0])
     app= QApplication (sys.argv)
     win= QMainWindow ()
 
-    centralwidget = QWidget(win)
-    win.setCentralWidget (centralwidget)
-
-    sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-    sizePolicy.setHorizontalStretch(0)
-    sizePolicy.setVerticalStretch(0)
-    sizePolicy.setHeightForWidth(centralwidget.sizePolicy().hasHeightForWidth())
-    centralwidget.setSizePolicy(sizePolicy)
-
     scene= QGraphicsScene ()
 
     item= QGraphicsPixmapItem ()
@@ -178,11 +169,8 @@ SECONDS is the time between images.""" % sys.argv[0])
     timer.timeout.connect (runner.nextImage)
     timer.start (float (sys.argv[2])*1000)
 
-    layout= QVBoxLayout (centralwidget)
-    layout.setSpacing (0)
-    layout.setContentsMargins (0, 0, 0, 0)
-    layout.addWidget (view)
 
+    win.setCentralWidget (view)
     win.showFullScreen ()
 
     app.exec_ ()
