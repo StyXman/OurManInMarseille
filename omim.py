@@ -27,10 +27,11 @@ import os.path
 import random
 import sys
 
-from PyQt4.QtGui import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
-from PyQt4.QtGui import QPixmap, QGraphicsPixmapItem, QAction, QKeySequence
-from PyQt4.QtGui import QVBoxLayout, QWidget, QSizePolicy, QFrame, QBrush, QColor
-from PyQt4.QtCore import QTimer, QObject, QSize, Qt, QRectF
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsView, QGraphicsScene
+from PyQt5.QtGui import QPixmap, QKeySequence, QBrush, QColor
+from PyQt5.QtWidgets import QGraphicsPixmapItem, QAction
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtCore import QTimer, QObject, QSize, Qt, QRectF
 
 from gi.repository import GExiv2, GLib
 
@@ -156,7 +157,6 @@ SECONDS is the time between images.""" % sys.argv[0])
     view= QGraphicsView (scene, win)
     view.setFrameShadow (QFrame.Plain)
     view.setFrameStyle (QFrame.NoFrame)
-    view.show()
 
     brush = QBrush(QColor(0, 0, 0))
     brush.setStyle(Qt.SolidPattern)
@@ -170,6 +170,7 @@ SECONDS is the time between images.""" % sys.argv[0])
 
     firstImage= QTimer.singleShot (200, runner.nextImage)
 
+    view.show()
     win.setCentralWidget (view)
     win.showFullScreen ()
 
